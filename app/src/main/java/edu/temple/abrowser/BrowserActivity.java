@@ -13,6 +13,8 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
 
     FragmentManager fm;
 
+    private final String PAGES_KEY = "pages";
+
     PageControlFragment pageControlFragment;
     BrowserControlFragment browserControlFragment;
     PageListFragment pageListFragment;
@@ -28,7 +30,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null)
-            pages = (ArrayList) savedInstanceState.getSerializable("pages");
+            pages = (ArrayList) savedInstanceState.getSerializable(PAGES_KEY);
         else
             pages = new ArrayList<>();
 
@@ -60,7 +62,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
                     .commit();
         }
 
-        // If fragment already added (activity restarted) then hold reference
+        // If PagerFragment already added (activity restarted) then hold reference
         // otherwise add new fragment. Only one instance of fragment is ever present
         if ((tmpFragment = fm.findFragmentById(R.id.page_viewer)) instanceof PagerFragment)
             pagerFragment = (PagerFragment) tmpFragment;
@@ -71,6 +73,10 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
                     .commit();
         }
 
+
+        // If fragment already added (activity restarted) then hold reference
+        // otherwise add new fragment IF container available. Only one instance
+        // of fragment is ever present
         if (listMode) {
             if ((tmpFragment = fm.findFragmentById(R.id.page_list)) instanceof PageListFragment)
                 pageListFragment = (PageListFragment) tmpFragment;
@@ -106,11 +112,13 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         super.onSaveInstanceState(outState);
 
         // Save list of open pages for activity restart
-        outState.putSerializable("pages", pages);
+        outState.putSerializable(PAGES_KEY, pages);
     }
 
     /**
      * Update WebPage whenever PageControlFragment sends new Url
+     * Create new page first if none exists
+     * Alternatively, you can create an empty page when the activity first loads
      * @param url to load
      */
     @Override
@@ -134,7 +142,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     }
 
     /**
-     * Go back to next page when user presses Forward in PageControlFragment
+     * Go forward to next page when user presses Forward in PageControlFragment
      */
     @Override
     public void forward() {
@@ -143,17 +151,24 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
 
     /**
      * Update displayed Url in PageControlFragment when Webpage Url changes
+     * only if it is the currently displayed page, and not another page
      * @param url to display
      */
     @Override
     public void updateUrl(String url) {
         if (url != null && url.equals(pagerFragment.getCurrentUrl())) {
             pageControlFragment.updateUrl(url);
+
+            // Update the ListView in the PageListFragment - results in updated titles
             notifyWebsitesChanged();
         }
     }
 
-
+    /**
+     * Update displayed page title in activity when Webpage Url changes
+     * only if it is the currently displayed page, and not another page
+     * @param title to display
+     */
     @Override
     public void updateTitle(String title) {
         if (title != null && title.equals(pagerFragment.getCurrentTitle()) && getSupportActionBar() != null)
@@ -163,14 +178,25 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         notifyWebsitesChanged();
     }
 
+    /**
+     * Add a new page/fragment to the list and display it
+     */
     @Override
     public void newPage() {
+        // Add page to list
         pages.add(new PageViewerFragment());
+        // Update all necessary views
         notifyWebsitesChanged();
+        // Display the newly created page
         pagerFragment.showPage(pages.size() - 1);
+        // Clear the displayed URL in PageControlFragment and title in the activity
         clearIdentifiers();
     }
 
+    /**
+     * Display requested page in the PagerFragment
+     * @param position of page to display
+     */
     @Override
     public void pageSelected(int position) {
         pagerFragment.showPage(position);

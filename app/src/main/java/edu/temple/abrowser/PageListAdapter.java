@@ -14,6 +14,7 @@ public class PageListAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<PageViewerFragment> pages;
 
+    // Takes list of pages and uses titles for Views
     public PageListAdapter (Context context, ArrayList<PageViewerFragment> pages) {
         this.context = context;
         this.pages = pages;

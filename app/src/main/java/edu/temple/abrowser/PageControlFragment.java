@@ -63,10 +63,19 @@ public class PageControlFragment extends Fragment {
         return l;
     }
 
+    /**
+     * Display updated URL
+     * @param url
+     */
     public void updateUrl(String url) {
         urlTextView.setText(url);
     }
 
+    /**
+     * Add http to URL if no scheme specified
+     * @param url to format
+     * @return formatted URL
+     */
     private String formatUrl(String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             return "http://" + url;

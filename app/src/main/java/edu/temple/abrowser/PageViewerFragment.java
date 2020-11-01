@@ -124,7 +124,8 @@ public class PageViewerFragment extends Fragment {
     }
 
     /**
-     * Get the title of the page currently being displayed
+     * Get the title of the page currently being displayed,
+     * or the page's URL if title not available when requested
      * @return the title of the page currently being viewed
      */
     public String getTitle() {
