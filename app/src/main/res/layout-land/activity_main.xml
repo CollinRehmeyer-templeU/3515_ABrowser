@@ -32,13 +32,12 @@
         android:id="@+id/page_viewer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/page_control" />
+        app:layout_constraintTop_toBottomOf="@id/bookmark_control"
+        app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
     <FrameLayout
         android:id="@+id/page_list"
@@ -60,5 +59,17 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.18"
         app:layout_constraintWidth_percent="10" />
+
+    <FrameLayout
+        android:id="@+id/bookmark_control"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        tools:layout_editor_absoluteX="133dp"
+        tools:layout_editor_absoluteY="1dp"
+        app:layout_constraintStart_toEndOf="@id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/page_control">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

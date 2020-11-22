@@ -19,6 +19,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     BrowserControlFragment browserControlFragment;
     PageListFragment pageListFragment;
     PagerFragment pagerFragment;
+    BookmarkFragment bookmarkFragment;
 
     ArrayList<PageViewerFragment> pages;
 
@@ -70,6 +71,17 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             pagerFragment = PagerFragment.newInstance(pages);
             fm.beginTransaction()
                     .add(R.id.page_viewer, pagerFragment)
+                    .commit();
+        }
+
+        // If BookmarkFragment already added (activity restarted) then hold reference
+        // otherwise add new fragment. Only one instance of fragment is ever present
+        if ((tmpFragment = fm.findFragmentById(R.id.bookmark_control)) instanceof BookmarkFragment)
+            bookmarkFragment = (BookmarkFragment) tmpFragment;
+        else {
+            bookmarkFragment = BookmarkFragment.newInstance();
+            fm.beginTransaction()
+                    .add(R.id.bookmark_control, bookmarkFragment)
                     .commit();
         }
 
