@@ -6,10 +6,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class BrowserActivity extends AppCompatActivity implements PageControlFragment.PageControlInterface, PageViewerFragment.PageViewerInterface, BrowserControlFragment.BrowserControlInterface, PagerFragment.PagerInterface, PageListFragment.PageListInterface {
+public class BrowserActivity extends AppCompatActivity implements PageControlFragment.PageControlInterface, PageViewerFragment.PageViewerInterface, BrowserControlFragment.BrowserControlInterface, PagerFragment.PagerInterface, PageListFragment.PageListInterface, BookmarkFragment.BookmarkInterface {
 
     FragmentManager fm;
 
@@ -213,4 +220,48 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     public void pageSelected(int position) {
         pagerFragment.showPage(position);
     }
+
+
+    public void createBookmark()
+    {
+        Bookmark b = new Bookmark(pagerFragment.getCurrentTitle(), pagerFragment.getCurrentUrl());
+        Log.d("NEW BOOKMARK --- ", "TITLE: " + b.getTitle() + ", URL: " + b.getUrl());
+
+        File newBookmark = new File(getCacheDir(), b.getTitle());
+        FileOutputStream fos;
+        FileInputStream fis;
+
+        //Writing bookmark to file
+        try
+        {
+            fos = new FileOutputStream(b.getTitle(), true); //ERROR HERE: READ-ONLY FILE SYSTEM
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(b);
+
+            oos.close();
+            fos.close();
+        }
+        catch(Exception e)
+        {
+            Log.d("FILE ERROR", e.getMessage());
+        }
+
+        // Reading Bookmark from File
+        try
+        {
+            fis = new FileInputStream(b.getTitle());
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            Bookmark b2 = (Bookmark)ois.readObject();
+            fis.close();
+            ois.close();
+            Log.d("BOOKMARK FROM FILE --- ", "TITLE: " + b2.getTitle() + ", URL: " + b2.getUrl());
+
+        }
+        catch(Exception e)
+        {
+            Log.d("FILE ERROR", e.getMessage());
+        }
+    }
+
 }

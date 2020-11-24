@@ -1,12 +1,15 @@
 package edu.temple.abrowser;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,10 +18,10 @@ import android.view.ViewGroup;
  */
 public class BookmarkFragment extends Fragment {
 
-
+    private BookmarkInterface callback;
 
     public BookmarkFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -37,9 +40,36 @@ public class BookmarkFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if (context instanceof BookmarkInterface) {
+            callback = (BookmarkInterface) context;
+        } else {
+            throw new RuntimeException("You must implement BookmarkInterface to attach this fragment");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bookmark, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_bookmark, container, false);
+
+        v.findViewById(R.id.new_bookmark_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.createBookmark();
+            }
+        });
+
+        return v;
+    }
+
+
+    public interface BookmarkInterface
+    {
+        public void createBookmark();
     }
 }
