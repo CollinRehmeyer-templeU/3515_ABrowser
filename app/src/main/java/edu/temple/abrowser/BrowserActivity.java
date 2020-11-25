@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -227,19 +228,16 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         Bookmark b = new Bookmark(pagerFragment.getCurrentTitle(), pagerFragment.getCurrentUrl());
         Log.d("NEW BOOKMARK --- ", "TITLE: " + b.getTitle() + ", URL: " + b.getUrl());
 
-        File newBookmark = new File(getCacheDir(), b.getTitle());
-        FileOutputStream fos;
-        FileInputStream fis;
+        String filename = b.getTitle();
+        FileOutputStream fos = null;
+        FileInputStream fis = null;
 
         //Writing bookmark to file
         try
         {
-            fos = new FileOutputStream(b.getTitle(), true); //ERROR HERE: READ-ONLY FILE SYSTEM
+            fos = openFileOutput(filename, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(b);
-
-            oos.close();
-            fos.close();
         }
         catch(Exception e)
         {
@@ -249,7 +247,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         // Reading Bookmark from File
         try
         {
-            fis = new FileInputStream(b.getTitle());
+            fis = openFileInput(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
             Bookmark b2 = (Bookmark)ois.readObject();
