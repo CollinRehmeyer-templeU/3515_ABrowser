@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -22,6 +23,9 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     FragmentManager fm;
 
     private final String PAGES_KEY = "pages";
+    public static final String BOOKMARK_URL_KEY = "edu.temple.mybrowser.bookmarkurlkey";
+    public static final int PICK_BOOKMARK = 3271;
+    private String bookmarkUrl;
 
     PageControlFragment pageControlFragment;
     BrowserControlFragment browserControlFragment;
@@ -39,7 +43,14 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null)
+        {
             pages = (ArrayList) savedInstanceState.getSerializable(PAGES_KEY);
+            Log.d("BROWSER ACTIVITY ", "Got pages list");
+            for(PageViewerFragment p : pages)
+            {
+                Log.d("Page with url: ", p.getUrl());
+            }
+        }
         else
             pages = new ArrayList<>();
 
@@ -80,6 +91,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             fm.beginTransaction()
                     .add(R.id.page_viewer, pagerFragment)
                     .commit();
+            Log.d("BROWSER ACTIVITY ", "Created new PagerFragment");
         }
 
         // If BookmarkFragment already added (activity restarted) then hold reference
@@ -107,7 +119,6 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
                         .commit();
             }
         }
-
     }
 
 
@@ -238,13 +249,21 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             fos = openFileOutput(filename, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(b);
+            Log.d("NEW BOOKMARK --- ", "BOOKMARK WRITTEN TO FILE");
         }
         catch(Exception e)
         {
             Log.d("FILE ERROR", e.getMessage());
         }
 
-        // Reading Bookmark from File
+        //List all bookmarks for debugging
+        for(File f : getFilesDir().listFiles())
+        {
+            Log.d("BOOKMARK --- ", f.getName());
+        }
+
+        // Reading Bookmark from File for debugging
+        /*
         try
         {
             fis = openFileInput(filename);
@@ -259,6 +278,28 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         catch(Exception e)
         {
             Log.d("FILE ERROR", e.getMessage());
+        }
+        */
+    }
+
+    public void openBookmarks()
+    {
+        Intent intent = new Intent(this, BookmarkActivity.class);
+        startActivityForResult(intent, PICK_BOOKMARK);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_BOOKMARK) {
+            if (resultCode == RESULT_OK) {
+                String b = data.getStringExtra(BOOKMARK_URL_KEY);
+                Log.d("ACTIVITY RESULT", "bookmark url is: " + b);
+
+                newPage();
+                go(b);
+            }
         }
     }
 

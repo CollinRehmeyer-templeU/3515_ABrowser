@@ -12,9 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PagerFragment extends Fragment {
+public class PagerFragment extends Fragment implements Serializable {
 
     private PagerInterface browserActivity;
 
@@ -109,7 +110,7 @@ public class PagerFragment extends Fragment {
      * Update the list of fragments in viewpager when a new page is added
       */
     public void notifyWebsitesChanged() {
-        viewPager.getAdapter().notifyDataSetChanged();
+            viewPager.getAdapter().notifyDataSetChanged();
     }
 
     /**

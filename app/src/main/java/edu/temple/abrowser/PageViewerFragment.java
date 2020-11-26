@@ -9,18 +9,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class PageViewerFragment extends Fragment {
+import java.io.Serializable;
+
+public class PageViewerFragment extends Fragment implements Serializable {
 
     private static final String URL_KEY = "url";
 
-    private WebView webView;
-    private PageViewerInterface browserActivity;
+    private transient WebView webView;
+    private transient PageViewerInterface browserActivity;
 
     private String url;
 
@@ -147,6 +151,8 @@ public class PageViewerFragment extends Fragment {
         else
             return "";
     }
+
+
 
     interface PageViewerInterface {
         void updateUrl(String url);

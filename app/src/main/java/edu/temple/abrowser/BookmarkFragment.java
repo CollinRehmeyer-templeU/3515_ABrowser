@@ -64,6 +64,13 @@ public class BookmarkFragment extends Fragment {
             }
         });
 
+        v.findViewById(R.id.open_bookmarks_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.openBookmarks();
+            }
+        });
+
         return v;
     }
 
@@ -71,5 +78,6 @@ public class BookmarkFragment extends Fragment {
     public interface BookmarkInterface
     {
         public void createBookmark();
+        public void openBookmarks();
     }
 }
