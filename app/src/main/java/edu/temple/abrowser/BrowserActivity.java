@@ -252,6 +252,8 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             oos.writeObject(b);
             Log.d("NEW BOOKMARK --- ", "BOOKMARK WRITTEN TO FILE");
             Toast.makeText(this, "New Bookmark: " + b.getTitle(), Toast.LENGTH_SHORT).show();
+            fos.close();
+            oos.close();
         }
         catch(Exception e)
         {

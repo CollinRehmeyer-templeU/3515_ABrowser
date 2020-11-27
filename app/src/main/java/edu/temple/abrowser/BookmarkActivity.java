@@ -1,5 +1,9 @@
 package edu.temple.abrowser;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
 import android.util.Log;
 import android.view.View;
@@ -18,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,9 +32,11 @@ import java.util.ArrayList;
 
 public class BookmarkActivity extends AppCompatActivity {
 
+    private Context me = this;
     private ListView bookmarkListView;
     private boolean DELETE_MODE;
     private ArrayList<String> bookmarkNamesList;
+    private String selectedBookmarkFilename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +89,32 @@ public class BookmarkActivity extends AppCompatActivity {
                 }
                 else {
                     //Delete this bookmark
-                    TextView v = (TextView) view;
+                    TextView v = (TextView)view;
+                    selectedBookmarkFilename = v.getText().toString();
 
-                    String filename = v.getText().toString();
-                    deleteFile(filename);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(me);
+                    builder.setMessage("Are you sure?");
 
-                    loadBookmarks();
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Delete
+                            deleteFile(selectedBookmarkFilename);
+                            selectedBookmarkFilename = "";
+                            loadBookmarks();
+                        }
+                    });
+
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Don't Delete
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
 
                 }
             }
@@ -127,3 +155,4 @@ public class BookmarkActivity extends AppCompatActivity {
 
     }
 }
+
