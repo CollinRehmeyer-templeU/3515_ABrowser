@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -250,6 +251,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(b);
             Log.d("NEW BOOKMARK --- ", "BOOKMARK WRITTEN TO FILE");
+            Toast.makeText(this, "New Bookmark: " + b.getTitle(), Toast.LENGTH_SHORT).show();
         }
         catch(Exception e)
         {
