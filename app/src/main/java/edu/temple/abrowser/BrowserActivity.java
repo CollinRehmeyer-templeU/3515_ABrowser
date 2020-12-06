@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -123,6 +124,13 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
                         .add(R.id.page_list, pageListFragment)
                         .commit();
             }
+        }
+
+        Intent myIntent = getIntent();
+        if(myIntent.getAction() == Intent.ACTION_VIEW)
+        {
+            newPage();
+            go(myIntent.getDataString());
         }
     }
 
