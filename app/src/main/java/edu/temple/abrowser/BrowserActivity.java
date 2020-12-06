@@ -8,10 +8,12 @@ import androidx.fragment.app.FragmentManager;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
@@ -29,6 +31,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     public static final String BOOKMARK_URL_KEY = "edu.temple.mybrowser.bookmarkurlkey";
     public static final int PICK_BOOKMARK = 3271;
     private String bookmarkUrl;
+    private String intentUrl;
 
     PageControlFragment pageControlFragment;
     BrowserControlFragment browserControlFragment;
@@ -126,11 +129,23 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             }
         }
 
-        Intent myIntent = getIntent();
-        if(myIntent.getAction() == Intent.ACTION_VIEW)
+        Intent intent = getIntent();
+
+        if(intent.getAction() == Intent.ACTION_VIEW)
         {
-            newPage();
-            go(myIntent.getDataString());
+             intentUrl = intent.getDataString();
+             Log.d("INTENT URL", "Url: " + intentUrl);
+        }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if(intentUrl != null)
+        {
+            go(intentUrl);
+            intentUrl = null;
         }
     }
 

@@ -57,6 +57,8 @@ public class PagerFragment extends Fragment implements Serializable {
         } else {
             throw new RuntimeException("You must implement PagerInterface to attach this fragment");
         }
+
+
     }
 
     @Override
@@ -102,6 +104,7 @@ public class PagerFragment extends Fragment implements Serializable {
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
+
 
         return l;
     }
